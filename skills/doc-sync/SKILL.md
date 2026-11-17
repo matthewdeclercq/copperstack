@@ -24,7 +24,7 @@ By default, the branch against the default branch (`git merge-base HEAD origin/H
 From the diff: `CHANGED` (files), and `CHANGED_CODE` (those under a prefix in `Code roots`). If `CHANGED` is empty and the run is not `--full`, say so and stop.
 
 - **Skills due:** `--full`, or `CHANGED` touches a skill file.
-- **Architecture due:** `--full`, or `CHANGED` adds, deletes, or renames a source file or folder.
+- **Architecture due:** `--full`, or `CHANGED` adds, deletes, or renames a source file or folder, or `CHANGED_CODE` deletes or renames a name the architecture doc shows.
 
 **Fan out** when `--full`, more than 15 files changed, or the diff spans more than three top-level areas: one explorer per check below, each returning doc location, claim, and what is true. Otherwise work inline.
 

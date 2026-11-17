@@ -74,4 +74,4 @@ Under the table: the feature ID scheme, a prefix and the next free number (defau
   - No open-goal lists, goal order, or definition-of-done copies outside the goals doc.
   - One home per fact: where a doc restates a fact the map gives to another doc, replace it with a pointer. If the map names no owner for a fact, ask.
   - In the decision doc, search for `shipped`, `Done`, `Out of this`, and `Superseded`. Each hit is bookkeeping to strip unless it is a product rule. Every row names a refused path. Directions to the UI still match the app.
-  - In the architecture doc, no product rule is restated, and no diagram node or edge names code that is gone.
+  - In the architecture doc, no product rule is restated.
