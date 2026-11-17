@@ -58,7 +58,7 @@ Under the table: the feature ID scheme, a prefix and the next free number (defau
 
 ## Workflows
 
-- **Add a goal:** append its section and a row at the end of the order table, and mark its backlog IDs `Open`. Lock a decision only if it passes rule 7; most goals lock nothing.
+- **Add a goal:** first read its backlog rows and the code they touch, and ask the owner each product call the rows leave open that would change what gets built. Record each answer in the row's acceptance criteria. Then append its section and a row at the end of the order table, and mark its backlog IDs `Open`. Lock a decision only if it passes rule 7; most goals lock nothing.
 - **Reorder goals:** the order table only. Any other file that needs an edit is breaking rule 1: make it a pointer.
 - **Lock or amend a decision:** the row passes rule 7 and names what was refused. Update the affected acceptance criteria in the backlog, the one restatement allowed; the decision doc wins.
 - **Answer a challenged decision:** "change it" amends or deletes the row. "Unlock" deletes it, with no dropped-design entry. "No" adds one clause naming what was rejected and why, so it is not argued again.
