@@ -27,8 +27,9 @@ uppercase letter and containing a lowercase letter. It is
 checked only when code roots are known. --code-root sets those roots and
 overrides the AGENTS.md heading `Code roots`. Without the flag, that heading's
 list items are the roots. If the heading is missing and no flag is passed,
-bare type names are not checked. A name is defined when a non-markdown file
-under a code root has that stem, or a source line declares it. The script does
+bare type names are not checked. A name is defined when a folder under a code
+root has that name, a non-markdown file there has that stem, or a source line
+declares it. The script does
 not append a file extension.
 
 A doc inside an area, a folder below --root with its own AGENTS.md, also
@@ -269,7 +270,12 @@ def index_definitions(code_roots):
     )
     for code_root in code_roots:
         for path in code_root.rglob("*"):
-            if not path.is_file() or any(part in SKIP_DIRS or part.startswith(".") for part in path.relative_to(code_root).parts[:-1]):
+            parts = path.relative_to(code_root).parts
+            if path.is_dir():
+                if not any(part in SKIP_DIRS or part.startswith(".") for part in parts) and bare_type(path.name):
+                    found.add(path.name)
+                continue
+            if not path.is_file() or any(part in SKIP_DIRS or part.startswith(".") for part in parts[:-1]):
                 continue
             stem = path.stem
             if path.suffix.lower() not in MARKDOWN_SUFFIXES and bare_type(stem):

@@ -2,7 +2,9 @@
 """Proves bare-type lookup and the skipped missing-directory path.
 
 `Widget` is declared as `class Widget` in src/models.py. There is no file
-named Widget and no extension is appended. `MissingType` has no declaration.
+named Widget and no extension is appended. `Networking` is a folder under the
+code root, so it counts as defined; a hidden folder does not. `MissingType`
+has no declaration.
 `GoneDir/Weather` stays unreported even though that path does not exist.
 `--code-root` overrides the AGENTS.md `Code roots` list. With neither, bare
 type names are not checked.
@@ -31,11 +33,15 @@ def main():
         (root / "src").mkdir()
         (root / "other").mkdir()
         (root / "src" / "models.py").write_text("class Widget:\n    pass\n", encoding="utf-8")
+        (root / "src" / "Networking").mkdir()
+        (root / "src" / ".Hidden").mkdir()
         (root / "docs").mkdir()
         (root / "docs" / "guide.md").write_text(
             "\n".join(
                 [
                     "Defined `Widget`.",
+                    "Module folder `Networking`.",
+                    "Hidden folder `Hidden`.",
                     "Missing `MissingType`.",
                     "Gone directory `GoneDir/Weather`.",
                     "Live `src/models.py`.",
@@ -53,6 +59,8 @@ def main():
         code, out, err = run(root, "--doc-folder", "docs")
         assert code == 1, (code, out, err)
         assert "Widget" not in out.split(), out
+        assert "Networking" not in out, out
+        assert any(line.endswith(": Hidden") for line in out.splitlines()), out
         assert any(line.endswith(": MissingType") for line in out.splitlines()), out
         assert "GoneDir/Weather" not in out, out
         assert "src/models.py" not in out, out
