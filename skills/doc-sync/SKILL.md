@@ -30,13 +30,13 @@ From the diff: `CHANGED` (files), and `CHANGED_CODE` (those under a prefix in `C
 
 ## Checks
 
-Start every run with this skill's `scripts/dead-paths.py`. Run that file by its path. Do not assume the current directory is the skill directory or the target repo. `--root` is the target repo. Pass each doc in scope as its own `--doc-folder` value (a file or a directory):
+Start every run with this skill's `scripts/dead-paths.py`. Run that file by its path. Do not assume the current directory is the skill directory or the target repo. `--root` is the target repo. Pass each doc in scope as its own `--doc-folder` value (a file or a directory), except the report-only planning docs and spike write-ups — they name things that are meant to be gone or not built yet:
 
 ```bash
 python3 "<skill>/scripts/dead-paths.py" --root "<repo>" --doc-folder "<doc in scope>"
 ```
 
-It reads `Code roots` itself; its docstring has the details. Each line it prints is a doc naming a path the tree no longer has — a check 1, 3, or 4 fix. A hit in a report-only doc is reported, not fixed. It sees paths only; the claims below stay yours.
+It reads `Code roots` itself; its docstring has the details. Each line it prints before `Unknown names` is a doc naming a path the tree no longer has — a check 1, 3, or 4 fix. Each line under `Unknown names` is a capitalized name no code root defines; many are UI text, SDK types, or plist keys, so fix one only after the code shows it is gone. It sees paths and names only; the claims below stay yours.
 
 **1 — Drift (every doc in scope but the report-only ones).** Verify every concrete claim — paths, layout, commands, names, and links. Fix each false claim in place, keeping the phrasing around it. Never expand goal prose into `AGENTS.md`.
 

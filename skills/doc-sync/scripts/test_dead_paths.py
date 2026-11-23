@@ -8,6 +8,11 @@ has no declaration.
 `GoneDir/Weather` stays unreported even though that path does not exist.
 `--code-root` overrides the AGENTS.md `Code roots` list. With neither, bare
 type names are not checked.
+
+The second repo checks false alarms: unknown names are listed but do not fail
+the run; var/const/extension count as declarations; a tail of a real path is
+live; a glob, brace, vN, or host-name path is skipped; a real dead path still
+fails.
 """
 
 import subprocess
@@ -94,6 +99,45 @@ def main():
         assert "src/button.ts" not in out_area, out_area
         assert any(line.endswith(": Gone") for line in out_area.splitlines()), out_area
         assert "src/gone.ts" in out_area, out_area
+
+    with tempfile.TemporaryDirectory() as tmp:
+        root = Path(tmp)
+        feature = root / "App" / "Sources" / "Features" / "Map"
+        feature.mkdir(parents=True)
+        (root / "Tests").mkdir()
+        (root / "docs").mkdir()
+        (feature / "ChartHUD.swift").write_text("struct ChartHUD {}\n", encoding="utf-8")
+        (root / "App" / "Sources" / "Formats.swift").write_text(
+            "var BakedFormats = 1\nexport const MapView = () => null\nextension Track {}\n",
+            encoding="utf-8",
+        )
+        (root / "Tests" / "WeatherSquareAPITests.swift").write_text("", encoding="utf-8")
+        (root / "docs" / "ios.md").write_text(
+            "\n".join(
+                [
+                    "Labels `Save` and `VStack`.",
+                    "Declared `BakedFormats` `MapView` `Track`.",
+                    "Tail `Features/Map/ChartHUD.swift` and `Features/Map/`.",
+                    "Glob `Tests/WeatherSquare*Tests.swift` and `src/{a,b}.py`.",
+                    "Hosts `host.example.dev/formats.json` and `api/vN/formats.json`.",
+                ]
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+
+        code_ios, out_ios, err_ios = run(root, "--doc-folder", "docs", "--code-root", "App/Sources")
+        assert code_ios == 0, (code_ios, out_ios, err_ios)
+        dead_part, _, unknown_part = out_ios.partition("Unknown names")
+        assert dead_part.startswith("Clean:"), out_ios
+        assert {line.rsplit(": ", 1)[-1] for line in unknown_part.splitlines()[1:]} == {"Save", "VStack"}, out_ios
+
+        with (root / "docs" / "ios.md").open("a", encoding="utf-8") as doc:
+            doc.write("Gone `Map/Gone.swift` and `cp Tests/Gone.swift <dest>`.\n")
+        code_gone, out_gone, err_gone = run(root, "--doc-folder", "docs", "--code-root", "App/Sources")
+        assert code_gone == 1, (code_gone, out_gone, err_gone)
+        dead_gone = out_gone.partition("Unknown names")[0]
+        assert "Map/Gone.swift" in dead_gone and "Tests/Gone.swift" in dead_gone, out_gone
 
     print("ok")
 
