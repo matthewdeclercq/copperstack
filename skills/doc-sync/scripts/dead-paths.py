@@ -20,40 +20,49 @@ A path counts inside backticks, a Markdown link, or a fenced block. A backtick
 path counts when its first segment exists under --root, or when the last
 segment has a file extension (so a deleted top-level directory still shows up).
 An extensionless path whose first segment is gone is skipped, even when the
-last segment is defined under a code root.
+last segment is defined under a code root. A path whose first segment is gone
+and looks like a host name (host.example.dev/formats.json) is skipped. A path
+is live when it resolves from --root, the doc's folder, or its area, or when
+it is the tail of a file or folder in the tree (Features/Map/X.swift for
+App/Sources/Features/Map/X.swift). In a git repo the tree is the files git
+tracks or would track.
 
 A bare type name is a backtick span that is one identifier starting with an
 uppercase letter and containing a lowercase letter. It is
-checked only when code roots are known. --code-root sets those roots and
+checked only when code roots are known. Bare names no code root defines are
+listed under "Unknown names" and never fail the run: many are UI text, SDK
+types, or plist keys, so each needs a look by hand. --code-root sets those roots and
 overrides the AGENTS.md heading `Code roots`. Without the flag, that heading's
 list items are the roots. If the heading is missing and no flag is passed,
 bare type names are not checked. A name is defined when a folder under a code
 root has that name, a non-markdown file there has that stem, or a source line
-declares it. The script does
-not append a file extension.
+declares it (class, struct, var, let, const, extension, and the like). The
+script does not append a file extension.
 
 A doc inside an area, a folder below --root with its own AGENTS.md, also
 resolves paths from that folder and looks up bare type names in it.
 
-Paths holding a placeholder (<schema>, X.Y.Z, *) are skipped. Exit 1 when it
-finds a dead path.
+A word holding a placeholder (<schema>, X.Y.Z, *, {a,b}, vN) is skipped
+whole, before any path is cut out of it. Exit 1 when it finds a dead path.
 """
 
 import argparse
 import functools
 import re
+import subprocess
 import sys
 from pathlib import Path
 
-PLACEHOLDER = re.compile(r"[<>*$]|X\.Y\.Z|\.\.\.|…")
+PLACEHOLDER = re.compile(r"[<>*${}]|X\.Y\.Z|\.\.\.|…|\bv[NX]\b")
+HOST = re.compile(r"(?:[a-z0-9-]+\.)+[a-z]{2,}")
 CODE_SPAN = re.compile(r"`([^`]+)`")
 MARKDOWN_LINK = re.compile(r"\]\(([^)#\s]+)")
 PATH_TOKEN = re.compile(r"(?<![\w./-])(?:\./)?((?:\.?[\w.+-]+/)+\.?[\w.+-]+)")
 HEADING = re.compile(r"^#{1,6}\s+(.+?)\s*$")
 # A lowercase letter keeps all-caps tokens (CHANGED, URL) out of the type check.
 BARE_TYPE = re.compile(r"[A-Z](?=[A-Za-z0-9]*[a-z])[A-Za-z0-9]*")
-DECL_MODIFIER = r"(?:public|private|protected|internal|export|abstract|final|sealed|data|case|open|pub|async|default)"
-DECL_KIND = r"(?:class|struct|enum|interface|trait|protocol|record|type|object|module|fn|func|function|def)"
+DECL_MODIFIER = r"(?:public|private|protected|internal|export|abstract|final|sealed|data|case|open|pub|async|default|static)"
+DECL_KIND = r"(?:class|struct|enum|interface|trait|protocol|record|type|object|module|fn|func|function|def|var|let|const|val|extension|typealias|actor)"
 MARKDOWN_SUFFIXES = {".md", ".markdown", ".mdx"}
 SKIP_DIRS = {".git", "__pycache__"}
 MAX_BYTES = 1_000_000
@@ -96,7 +105,9 @@ def main():
     code_roots = load_code_roots(root, args.code_root)
     defined = index_definitions(code_roots) if code_roots else set()
 
+    tails = tree_tails(root)
     dead = []
+    unknown = []
     for doc in files:
         home = area(doc, root)
         known = defined | area_definitions(home) if code_roots and home else defined
@@ -108,20 +119,23 @@ def main():
                 continue
             spans = [line] if fenced else CODE_SPAN.findall(line)
             links = [] if fenced else MARKDOWN_LINK.findall(line)
-            paths = [p for span in spans for p in PATH_TOKEN.findall(span) if reportable(p, root)]
+            paths = [p for span in spans for p in path_tokens(span) if reportable(p, root)]
             paths += [p for p in links if reportable_link(p)]
             for path in sorted(set(paths)):
                 if is_bare_type(path):
                     continue
-                if not resolves(path, doc, root, home):
+                if not resolves(path, doc, root, home) and path.removeprefix("./").rstrip("/") not in tails:
                     dead.append(f"{display(doc, root)}:{n}: {path}")
             if not code_roots:
                 continue
             for name in sorted({bare for span in CODE_SPAN.findall(line) if (bare := bare_type(span))}):
                 if name not in known:
-                    dead.append(f"{display(doc, root)}:{n}: {name}")
+                    unknown.append(f"{display(doc, root)}:{n}: {name}")
 
     print("\n".join(dead) if dead else f"Clean: {len(files)} docs.")
+    if unknown:
+        print("\nUnknown names (check by hand; these do not fail the run):")
+        print("\n".join(unknown))
     sys.exit(1 if dead else 0)
 
 
@@ -197,6 +211,36 @@ def roots_from_agents(root):
     return found
 
 
+def path_tokens(span):
+    return [p for word in span.split() if checkable(word) for p in PATH_TOKEN.findall(word)]
+
+
+def tree_tails(root):
+    try:
+        out = subprocess.run(
+            ["git", "-C", str(root), "ls-files", "-z", "--cached", "--others", "--exclude-standard"],
+            capture_output=True,
+            check=True,
+        ).stdout.decode("utf-8", "replace")
+        rels = [rel for rel in out.split("\0") if rel and (root / rel).exists()]
+    except (OSError, subprocess.CalledProcessError):
+        rels = [
+            p.relative_to(root).as_posix()
+            for p in root.rglob("*")
+            if p.is_file() and not any(part in SKIP_DIRS for part in p.relative_to(root).parts)
+        ]
+    entries = set()
+    for rel in rels:
+        parts = rel.split("/")
+        for end in range(2, len(parts) + 1):
+            entries.add(tuple(parts[:end]))
+    tails = set()
+    for parts in entries:
+        for start in range(1, len(parts) - 1):
+            tails.add("/".join(parts[start:]))
+    return tails
+
+
 def reportable(path, root):
     if not checkable(path):
         return False
@@ -207,6 +251,8 @@ def reportable(path, root):
         return True
     if (root / first).exists():
         return True
+    if HOST.fullmatch(first):
+        return False
     last = path.rstrip("/").rsplit("/", 1)[-1]
     return "." in last and not last.startswith(".")
 
