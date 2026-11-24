@@ -1,10 +1,10 @@
 ---
 name: bootstrap-repo
 description: >-
-  Writes the shared shrekstack base rule, and the response style when asked, into a repo for
+  Writes the shared copperstack base rule, and the response style when asked, into a repo for
   Claude Code, Cursor, or both, folds every agent instruction file into a lean
   root AGENTS.md and one per area, moves every skill into .agents/skills/, drafts the AGENTS.md
-  headings shrekstack skills read from the code, sets up the planning docs
+  headings copperstack skills read from the code, sets up the planning docs
   through doc-steward, and links it all for each tool.
   Use when the user asks to install the base rule or run bootstrap-repo.
 disable-model-invocation: true

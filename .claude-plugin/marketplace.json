@@ -1,14 +1,14 @@
 {
-  "name": "shrekstack",
-  "description": "This is my swamp.",
+  "name": "copperstack",
+  "description": "Keeping order while your agents build.",
   "owner": {
     "name": "Matthew Declercq"
   },
   "plugins": [
     {
-      "name": "shrekstack",
+      "name": "copperstack",
       "source": "./",
-      "description": "This is my swamp."
+      "description": "Keeping order while your agents build."
     }
   ]
 }

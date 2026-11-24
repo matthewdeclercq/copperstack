@@ -1,4 +1,4 @@
-# shrekstack
+# copperstack
 
 A plugin of agent skills for Claude Code and Cursor.
 
