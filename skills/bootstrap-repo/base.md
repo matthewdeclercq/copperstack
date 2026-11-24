@@ -32,13 +32,15 @@ The docs own **intent** — product lines, the queue, constraints, how to build.
 
 - Check the real thing, not a proxy: run the feature, read the actual value. "It compiles" is not done.
 - Fix the root cause, the first place the system went wrong. A guard is a fix only when the state it handles is legitimate; otherwise find what produced the state.
-- Fixing a bug: reproduce it first. When a cheap test path exists, write the failing test first.
+- Fixing a bug: reproduce it first. When a cheap test path exists, write the failing test first. A new or tightened test counts only after you see it fail: break the code it guards, run it, then restore the code.
+- A claim that something is slow, large, or costly cites a measurement.
+- After a rename, move, or delete, search the whole repo, docs and scripts included, for the old name or path.
 
 ## Skills
 
 Follow a skill whenever its task comes up. An `AGENTS.md` heading a skill reads counts as missing when its body starts with `TODO`.
 
-Run a skill on one model; fan out only when the skill says to. A skill that fans out read-only explorers runs them on a cheaper model, and keeps the orchestrator on the strongest. Explorers return findings only; the orchestrator alone edits, validates, and keeps any ledger. Split only on areas the skill or an `AGENTS.md` heading names; if none does, ask. A ledger goes in the response, or in a scratch file the goal names and deletes on ship. Never commit it.
+Run a skill on one model; fan out only when the skill says to. A skill that fans out read-only explorers runs them on a cheaper model, and keeps the orchestrator on the strongest. Explorers return findings only; the orchestrator checks each finding against the code before acting on it, and alone edits, validates, and keeps any ledger. Split only on areas the skill or an `AGENTS.md` heading names; if none does, ask. A ledger goes in the response, or in a scratch file the goal names and deletes on ship. Never commit it.
 
 ## Agent files
 

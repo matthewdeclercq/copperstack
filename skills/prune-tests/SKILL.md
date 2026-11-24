@@ -20,14 +20,14 @@ Delete or merge tests that no longer lock a live rule. Do not change production 
 
 ## Proof
 
-Judge each test against two imagined edits. **Break the behavior** (a wrong value, a skipped or doubled effect): a test that still passes proves nothing. **Change only the internals**, keeping every observable result: a test that now fails is pinned to the implementation. Keep a test that catches the first and survives the second; rewrite or delete the rest.
+Judge each test against two imagined edits. **Break the behavior** (a wrong value, a skipped or doubled effect): a test that still passes proves nothing. **Change only the internals**, keeping every observable result: a test that now fails is pinned to the implementation. Keep a test that catches the first and survives the second; rewrite or delete the rest. When a keep rests on a weak assertion (`>=`, not-nil, contains), make the break for real, run the test, then restore the code.
 
 Name the failure the next refactor would see without the test. If you cannot, keep it or ask. A test whose name is the only record of an invariant stays, or the invariant moves onto the test that remains. Reachability is the wrong proof here, and the compiler already catches a deleted API.
 
 ## Rubric
 
 - **Keep:** a named domain or adapter rule; a regression that failed first and stayed; an integration proof that cannot be a unit test, or a policy guard whose failure is catastrophic, when `Testing defaults` names it.
-- **Merge:** same setup with one assertion different (parameterize, or one matrix); the same rule asserted in two places (keep it in the type's suite).
+- **Merge:** same setup with one assertion different (parameterize, or one matrix); the same rule asserted in two places, when the outer layer only forwards the call (keep it in the type's suite). An outer layer that adds wiring keeps its own test.
 - **Delete:** anything `What to test` forbids; a test whose only job is "this API is gone"; an enum matrix that encodes no rule. Drop goal-named comments, but keep the assertion if the rule is live.
 - **Move:** only when the type already moved and `Testing defaults` says the test does not belong where it is.
 - **Owner-rank, never delete:** looks unused but might be the only lock on an invariant `Testing defaults` names as owner-rank. If it names none, ask.
@@ -39,7 +39,7 @@ Do not optimize for fewer files or coverage percentage.
 1. Scope the pass and when to stop. With no scope given, run a full-suite sweep.
 2. Baseline: the suite that owns the files, with each suite's test count.
 3. Classify 1–5 candidates against the rubric, reading the test and the code it covers.
-4. Edit the batch. The owning suite, and any other suite the change touches, go green, and each count drops by exactly the tests cut or merged. Cut any helper or fixture the batch leaves with no reader.
+4. Edit the batch. The owning suite, and any other suite the change touches, go green, and each count drops by exactly the tests cut or merged. Read each count from the run's output or result files, never from the diff. Cut any helper or fixture the batch leaves with no reader.
 5. Record the ledger row.
 
 A full-suite sweep first classifies every test file into the ledger, with no edits. Then it runs the passes in `Test passes`, or delete, merge, move by default. For duplicates, compare what tests assert, not what they are named.
