@@ -1,7 +1,5 @@
 # shrekstack
 
-This is my swamp!
-
 Agents act like the Three Blind Mice when they can’t see what’s true. Plans get scattered, the docs and code disagree, and nobody remembers the why. Slop piles up over time, and agents get slower and make more mistakes.
 
 Shrekstack keeps order in the swamp while your agents build it. It gives every fact one home and keeps it current:
