@@ -14,7 +14,7 @@ Delete or merge tests that no longer lock a live rule. Do not change production 
 `AGENTS.md` headings, and `Testing defaults` in the `AGENTS.md` of each test area in scope too. An area without its own `Testing defaults` inherits the root list:
 
 - `Testing defaults`: what to test (`What to test`), where tests go (`Where tests go`), and which invariants are owner-rank (`Owner-rank`). Missing: ask before deleting or moving any test.
-- `Build & test`: the suite commands. Missing: ask.
+- `Build & test`: the suite commands, and how to read each suite's test count. Missing: ask.
 - `File layout`: test areas to split a fan-out on. Missing: ask before fanning out.
 - `Test passes`, optional: the order of passes for a full sweep.
 
