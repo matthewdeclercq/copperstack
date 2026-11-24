@@ -1,8 +1,8 @@
-# shrekstack
+# copperstack
 
-Agents act like the Three Blind Mice when they can’t see what’s true. Plans get scattered, the docs and code disagree, and nobody remembers the why. Slop piles up over time, and agents get slower and make more mistakes.
+Agents work blind when they can’t see what’s true. Plans get scattered, the docs and code disagree, and nobody remembers the why. Slop piles up over time, and agents get slower and make more mistakes.
 
-Shrekstack keeps order in the swamp while your agents build it. It gives every fact one home and keeps it current:
+Copperstack keeps order while your agents build. It gives every fact one home and keeps it current:
 
 - **Single source of truth.** Goals, backlog, shipped work, decisions and architecture each live in their own doc, kept up to date by agents.
 - **Docs match the code.** Preventing drift becomes a core part of the agents' responsibility.
@@ -10,7 +10,7 @@ Shrekstack keeps order in the swamp while your agents build it. It gives every f
 
 You make the product calls. Agents do the busywork.
 
-New here? [Watch the slide deck](https://matthewdeclercq.github.io/shrekstack/).
+New here? [Watch the slide deck](https://matthewdeclercq.github.io/copperstack/).
 
 To get started, install the plugin and run `/bootstrap-repo`.
 

@@ -31,7 +31,7 @@ Frontmatter `name: verify-<app>`. The description names the app, the surface, an
 - **Cleanup.** Kill only what this run started. Leave the evidence.
 - **Features.** A `features/` folder beside the skill: a `README.md` index with the baseline state every recipe starts from, and one file per user-facing feature, the main ones to start. Each says what the user sees, every way a user gets to it, how to drive it (preconditions, then each action with its exact command and the result to see), and its gotchas. A missing precondition is a failure, with its reason written down.
 
-End with one line: upkeep is shrekstack's maintain-verify skill.
+End with one line: upkeep is copperstack's maintain-verify skill.
 
 ## Prove
 

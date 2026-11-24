@@ -1,10 +1,10 @@
 ---
 name: bootstrap-repo
 description: >-
-  Writes the shared shrekstack base rule, and the response style when asked, into a repo for
+  Writes the shared copperstack base rule, and the response style when asked, into a repo for
   Claude Code, Cursor, or both, folds every agent instruction file into a lean
   root AGENTS.md and one per area, moves every skill into .agents/skills/, drafts the AGENTS.md
-  headings shrekstack skills read from the code, sets up the planning docs
+  headings copperstack skills read from the code, sets up the planning docs
   through doc-steward, and links it all for each tool.
   Use when the user asks to install the base rule or run bootstrap-repo.
 disable-model-invocation: true
@@ -16,7 +16,7 @@ Run in the target repo. Do not edit product code, except the path fixes in step 
 
 1. **Tools.** Read `Agent tools` in `AGENTS.md`. When it is missing or `TODO`, ask once: Claude Code, Cursor, or both. Each later step sets up only the tools chosen, and removes what an earlier run set up for a tool no longer chosen.
 
-2. **Rules.** Write each file in this table, from beside this skill: for Claude Code, unchanged as a `.md` in `.claude/rules/`; for Cursor, as a `.mdc` in `.cursor/rules/` with frontmatter, a blank line, then the text. Overwrite them on every run. `style.md` is optional: when the repo has no `style` rule yet, ask once whether to install it, and say that every agent working in the repo, a teammate's included, will follow it. Delete `shrekstack-base` and `shrekstack-style` (`.md` and `.mdc`) left by an older run.
+2. **Rules.** Write each file in this table, from beside this skill: for Claude Code, unchanged as a `.md` in `.claude/rules/`; for Cursor, as a `.mdc` in `.cursor/rules/` with frontmatter, a blank line, then the text. Overwrite them on every run. `style.md` is optional: when the repo has no `style` rule yet, ask once whether to install it, and say that every agent working in the repo, a teammate's included, will follow it.
 
    | Source | Name in the repo | Cursor `description` |
    |--------|------------------|----------------------|

@@ -30,5 +30,5 @@ A few lines, no banners:
 - What the adversarial pass caught and fixed.
 - What was checked and cleared.
 - The commits made, one line each. No hooks ran: say so in one line.
-- If this work showed a shrekstack skill was wrong or missing something, or improved a repo skill shrekstack also has: a `shrekstack candidate` line saying what and why, without the repo-specific details.
+- If this work showed a copperstack skill was wrong or missing something, or improved a repo skill copperstack also has: a `copperstack candidate` line saying what and why, without the repo-specific details.
 - End with the commit the note covers: `Shipped through <full sha>`. Uncommitted work left behind (a suspected secret, a path `Git` excludes): name it.
