@@ -9,7 +9,7 @@ disable-model-invocation: true
 
 # Prune Tests
 
-Delete or merge tests that no longer lock a live rule. Do not change production behaviour, and do not add tests for gaps you notice.
+Delete or merge tests that no longer lock a live rule. Do not change production behavior, and do not add tests for gaps you notice.
 
 `AGENTS.md` headings, and `Testing defaults` in the `AGENTS.md` of each test area in scope too. An area without its own `Testing defaults` inherits the root list:
 
@@ -22,7 +22,7 @@ Delete or merge tests that no longer lock a live rule. Do not change production 
 
 Judge each test against two imagined edits. **Break the behavior** (a wrong value, a skipped or doubled effect): a test that still passes proves nothing. **Change only the internals**, keeping every observable result: a test that now fails is pinned to the implementation. Keep a test that catches the first and survives the second; rewrite or delete the rest. When a keep rests on a weak assertion (`>=`, not-nil, contains), make the break for real, run the test, then restore the code.
 
-Name the failure the next refactor would see without the test. If you cannot, keep it or ask. A test whose name is the only record of an invariant stays, or the invariant moves onto the test that remains. Reachability is the wrong proof here, and the compiler already catches a deleted API.
+Name the failure the next refactor would see without the test. If you cannot, keep it or ask. A test whose name is the only record of an invariant stays, or the invariant moves onto the test that remains. Reachability is the wrong proof here.
 
 ## Rubric
 
@@ -50,7 +50,7 @@ One row per file, or per method when a file splits. Statuses: `keep`, `merge`, `
 
 ## Fan out
 
-When the pass spans more than one test area, launch read-only explorers, one per area. Each returns a candidate table. Paste the surface, rubric, and proof into each prompt.
+When the pass spans more than one test area, launch explorers, one per area. Each returns a candidate table. Paste the surface, rubric, and proof into each prompt.
 
 ## Report
 

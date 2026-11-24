@@ -32,7 +32,7 @@ The docs own **intent** — product lines, the queue, constraints, how to build.
 
 - Check the real thing, not a proxy: run the feature, read the actual value. "It compiles" is not done.
 - Fix the root cause, the first place the system went wrong. A guard is a fix only when the state it handles is legitimate; otherwise find what produced the state.
-- Fixing a bug: reproduce it first. When a cheap test path exists, write the failing test first. A new or tightened test counts only after you see it fail: break the code it guards, run it, then restore the code.
+- Fixing a bug: reproduce it first, with a failing test when a cheap test path exists. A new or tightened test counts only after you see it fail: break the code it guards, run it, then restore the code.
 - A claim that something is slow, large, or costly cites a measurement.
 - After a rename, move, or delete, search the whole repo, docs and scripts included, for the old name or path.
 
