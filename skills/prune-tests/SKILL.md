@@ -11,7 +11,7 @@ disable-model-invocation: true
 
 Delete or merge tests that no longer lock a live rule. Do not change production behaviour, and do not add tests for gaps you notice.
 
-`AGENTS.md` headings, and `Testing defaults` in the `AGENTS.md` of each test area in scope too:
+`AGENTS.md` headings, and `Testing defaults` in the `AGENTS.md` of each test area in scope too. An area without its own `Testing defaults` inherits the root list:
 
 - `Testing defaults`: what to test (`What to test`), where tests go (`Where tests go`), and which invariants are owner-rank (`Owner-rank`). Missing: ask before deleting or moving any test.
 - `Build & test`: the suite commands. Missing: ask.
@@ -36,10 +36,10 @@ Do not optimize for fewer files or coverage percentage.
 
 ## Loop
 
-1. Scope the pass and when to stop.
-2. Baseline: the suite that owns the files.
+1. Scope the pass and when to stop. With no scope given, run a full-suite sweep.
+2. Baseline: the suite that owns the files, with each suite's test count.
 3. Classify 1–5 candidates against the rubric, reading the test and the code it covers.
-4. Edit the batch. The owning suite, and any other suite the change touches, go green.
+4. Edit the batch. The owning suite, and any other suite the change touches, go green, and each count drops by exactly the tests cut or merged. Cut any helper or fixture the batch leaves with no reader.
 5. Record the ledger row.
 
 A full-suite sweep first classifies every test file into the ledger, with no edits. Then it runs the passes in `Test passes`, or delete, merge, move by default. For duplicates, compare what tests assert, not what they are named.
