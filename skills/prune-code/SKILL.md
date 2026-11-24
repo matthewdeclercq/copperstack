@@ -11,7 +11,7 @@ disable-model-invocation: true
 
 Remove dead code, obsolete contracts, true duplicates, and dead comments without changing live behavior. Prove before deleting, from reachability and contracts, not tool reports. No style refactors.
 
-`AGENTS.md` headings, and `Proof traps` in the `AGENTS.md` of each area in scope too. An area without its own `Proof traps` inherits the root list; ask rather than guess only when the root list is missing, or the area has a contract type it doesn't name:
+`AGENTS.md` headings, and `Proof traps` in the `AGENTS.md` of each area in scope too. An area without its own `Proof traps` inherits the root list; ask only when that list is missing or misses a contract type the area has:
 
 - `Entry points`: where reachability starts.
 - `Proof traps`: contracts to confirm before deleting. Reachability alone is not proof while this list is unknown.
@@ -20,12 +20,11 @@ Remove dead code, obsolete contracts, true duplicates, and dead comments without
 
 ## Loop
 
-1. Scope the surface and when to stop. With no scope given, take every `Code roots` entry, fanned out by `File layout`.
+1. Scope the surface and when to stop. With no scope given, take every `Code roots` entry.
 2. Baseline: lint and tests, with each suite's test count.
 3. Trace reachability from the entry points.
-4. Prove 1–5 candidates: imports, wiring, tests, persistence keys, use from other areas, and the proof traps. Look for code written but never read (fields, counters, return values), not just code never referenced. When a cut leaves its source with no reader, prove and cut that source in the same batch, even in another area.
-   A member read only by tests is a keep when a test of live code relies on it; it is dead when its only reader is a test of itself.
-5. Delete the proven batch, run lint and tests, and record the result. Each suite must run the baseline count, all passing.
+4. Prove 1–5 candidates: imports, wiring, tests, persistence keys, use from other areas, and the proof traps. Include code written but never read (fields, counters, return values). If a cut leaves its source unread, cut that too, even in another area. A member only tests read stays if a test of live code needs it.
+5. Delete the proven batch, run lint and tests, and record the result. Every suite passes with its baseline count.
 
 Defer layer moves, new dependencies, persistence changes, and product-scope changes.
 
