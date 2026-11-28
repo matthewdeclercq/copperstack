@@ -16,5 +16,5 @@ Look only at what this task changed, not the whole codebase.
    - Tests this task added that overlap or check nothing real.
 3. Do not flag what a pre-commit hook already enforces.
 4. Fix everything you find without asking first. Never invent findings.
-5. Run the project's build and tests.
+5. Run the build and the tests the change can reach.
 6. Report what you fixed as a short list, most important first: one line each with the file, the line and the change. If nothing was worth changing, say so.
